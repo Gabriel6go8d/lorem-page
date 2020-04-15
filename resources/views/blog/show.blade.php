@@ -29,6 +29,9 @@
         let csrf_token = '<?php echo csrf_token(); ?>';
         let jsonBlogstoShow = '@json($blogs)'    
         let jsonCommentstoShow = '@json($comments)' 
+        let jsonRepliestoShow = '@json($replies)'
+        let ChildID = '{{$blogs->id}}'
+        let ParentID = 1
     </script>
 
     <script type='text/javascript' src="{{ URL::asset('js/app.js') }}"></script>

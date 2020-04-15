@@ -24,10 +24,11 @@ Route::get('/blog', 'BlogController@index');
 Route::get('/blog/create', 'BlogController@create')->middleware('auth');
 Route::get('/blog/{id}', 'BlogController@show');
 Route::post('/blog/create', 'BlogController@store');
-Route::post('/blogcomments/create', 'BlogCommentsController@store');
+
+Route::post('/comments/create', 'CommentsController@store');
+Route::post('/reply/create', 'ReplyController@store');
 
 Route::get('/gallery', 'GalleryController@index');
-Route::post('/gallerycomments/create', 'GalleryCommentsController@store');
 
 Route::get('/user/edit','UserController@update')->middleware('auth');
 Route::post('/user/edit', 'UserController@store');

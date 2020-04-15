@@ -13,7 +13,7 @@ function PageMain(prop) {
             <Wallpaper label='Welcome'/>
             <MyNavbar location={prop.location.pathname}/>
             <Part1/>
-            <CardSection showNum='3'/>
+            <CardSection/>
             <Part1/>
             <Part2/>
             <Part1/>

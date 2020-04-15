@@ -27,7 +27,10 @@
 
     <script>
         var csrf_token = '<?php echo csrf_token(); ?>';
-        let jsonGalleryComments = '@json($jsonComment)' 
+        let jsonCommentstoShow = '@json($comments)' 
+        let jsonRepliestoShow = '@json($replies)'
+        let ChildID = 1
+        let ParentID = 2
     </script>
     <script type='text/javascript' src="{{ URL::asset('js/app.js') }}"></script>
 </html>

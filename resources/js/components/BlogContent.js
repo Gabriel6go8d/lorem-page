@@ -7,10 +7,11 @@ function BlogContent() {
 
     const FormData = (data) => {
         const data1 = data.replace(/%731%/g, '"')
-        const data2 = data1.replace(/%732%/g, '\n')
-        return data2
+        // const data2 = data1.replace(/%732%%732%/g, '\n')
+        const data3 = data1.replace(/%732%/g, '\r\n')
+        return data3
     }
-
+    
     return (
         <div className='container mt-5'>
             <Parallax bgImage={blog.image} strength={500} style={{height: '300px'}}/>

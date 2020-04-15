@@ -99275,9 +99275,10 @@ function BlogContent() {
   var formDate = blog.updated_at.split('T');
 
   var FormData = function FormData(data) {
-    var data1 = data.replace(/%731%/g, '"');
-    var data2 = data1.replace(/%732%/g, '\n');
-    return data2;
+    var data1 = data.replace(/%731%/g, '"'); // const data2 = data1.replace(/%732%%732%/g, '\n')
+
+    var data3 = data1.replace(/%732%/g, '\r\n');
+    return data3;
   };
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -99319,11 +99320,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function CardSection(prop) {
-  console.log(blogstoShow);
+function CardSection() {
   var allList = JSON.parse(blogstoShow);
-  var List = allList.slice(0, prop.showNum);
-  var toShow = List.map(function (xx) {
+  var toShow = allList.map(function (xx) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CardSectionA__WEBPACK_IMPORTED_MODULE_1__["default"], {
       values: xx,
       key: xx.id
@@ -99401,12 +99400,167 @@ function CardSectionA(prop) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _CommentForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CommentForm */ "./resources/js/components/CommentForm.js");
+/* harmony import */ var _CommentBox2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CommentBox2 */ "./resources/js/components/CommentBox2.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
 
 
 function CommentBox(prop) {
+  //Just Style
   var CommStyle = {
     backgroundColor: 'white',
-    border: '1px solid #D9D9D9',
+    border: '1px solid #e5e5e5',
+    borderRadius: '5px'
+  }; //Prepare date time
+
+  var formDate = prop.values.updated_at.split('T'); //Prepare body format
+
+  var FormData = function FormData(data) {
+    var data1 = data.replace(/%731%/g, '"');
+    var data2 = data1.replace(/%732%/g, '\n');
+    return data2;
+  }; //State for the Reply Form
+
+
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      makeReply = _useState2[0],
+      setMakeReply = _useState2[1];
+
+  var clickMakeReply = function clickMakeReply(e) {
+    setMakeReply(function (xx) {
+      return !xx;
+    });
+  }; //Separe the needed replies from the all replyList
+
+
+  var exactReplies = [];
+
+  for (var i = 0; i < prop.replies.length; i++) {
+    if (prop.replies[i].parentcommentid === prop.values.id) {
+      exactReplies.push(prop.replies[i]);
+    }
+  }
+
+  var RepliestoShow = exactReplies.map(function (xx) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentBox2__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      values: xx,
+      key: xx.id,
+      parentComment: prop.values.id
+    });
+  });
+  var boole = true;
+
+  if (exactReplies.length < 1) {
+    boole = false;
+  } //Change state and label of the buttom for showing the replies
+
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      showReplies = _useState4[0],
+      setShowReplies = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('▼Show Replies'),
+      _useState6 = _slicedToArray(_useState5, 2),
+      butLabel = _useState6[0],
+      setButLabel = _useState6[1];
+
+  var clickShowReplies = function clickShowReplies() {
+    setShowReplies(function (xx) {
+      return !xx;
+    });
+
+    if (!showReplies) {
+      setButLabel('▲ Hide Replies');
+    } else {
+      setButLabel('▼ Show Replies');
+    }
+  };
+
+  var ButShowReply = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "btn btn-link m-0 p-0",
+    onClick: clickShowReplies
+  }, butLabel, " (", exactReplies.length, ")");
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-12 mt-1 mb-1",
+    style: CommStyle
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "ml-3 mr-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row align-items-end"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", {
+    className: "m-0 p-0"
+  }, FormData(prop.values.userid)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+    className: "ml-2"
+  }, formDate[0])), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    className: "m-0 p-0"
+  }, FormData(prop.values.comment))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "btn btn-link m-0 p-0",
+    onClick: clickMakeReply,
+    style: {
+      fontSize: '13px'
+    }
+  }, "Reply")))), makeReply && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentForm__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    action: "/reply/create",
+    commentid: prop.values.id
+  }), boole && ButShowReply, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "ml-5"
+  }, showReplies && RepliestoShow));
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (CommentBox);
+
+/***/ }),
+
+/***/ "./resources/js/components/CommentBox2.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/CommentBox2.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _CommentForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CommentForm */ "./resources/js/components/CommentForm.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+function CommentBox2(prop) {
+  var CommStyle = {
+    backgroundColor: 'white',
+    border: '1px solid #e5e5e5',
     borderRadius: '5px'
   };
   var formDate = prop.values.updated_at.split('T');
@@ -99417,23 +99571,47 @@ function CommentBox(prop) {
     return data2;
   };
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-12 mt-1",
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(false),
+      _useState2 = _slicedToArray(_useState, 2),
+      makeReply = _useState2[0],
+      setMakeReply = _useState2[1];
+
+  var clickMakeReply = function clickMakeReply(e) {
+    setMakeReply(function (xx) {
+      return !xx;
+    });
+  };
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-12 mt-1 mb-1",
     style: CommStyle
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row ml-2 mr-2 mt-2 align-items-end"
+    className: "ml-3 mr-3"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row align-items-end"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", {
     className: "m-0 p-0"
   }, FormData(prop.values.userid)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
     className: "ml-2"
   }, formDate[0])), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row mr-2 ml-2 mt-1"
+    className: "row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-    className: "m-0 p-0 mb-2"
-  }, FormData(prop.values.comment))));
+    className: "m-0 p-0"
+  }, FormData(prop.values.comment))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "btn btn-link m-0 p-0",
+    onClick: clickMakeReply,
+    style: {
+      fontSize: '13px'
+    }
+  }, "Reply")))), makeReply && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentForm__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    action: "/reply/create",
+    commentid: prop.parentComment
+  }));
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (CommentBox);
+/* harmony default export */ __webpack_exports__["default"] = (CommentBox2);
 
 /***/ }),
 
@@ -99488,8 +99666,16 @@ function CommentForm(prop) {
     value: csrf_token
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "hidden",
-    name: "blogid",
-    value: prop.setid
+    name: "childid",
+    value: ChildID
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "hidden",
+    name: "parentid",
+    value: ParentID
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "hidden",
+    name: "commentid",
+    value: prop.commentid
   }), pleaseRegister, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Form"].Group, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Form"].Control, {
     onChange: change,
     as: "textarea",
@@ -99505,7 +99691,6 @@ function CommentForm(prop) {
     className: "align-content-start justify-content-start"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     id: "subBut",
-    disabled: true,
     className: "btn btn-primary",
     align: "left",
     type: "submit"
@@ -99527,18 +99712,26 @@ function CommentForm(prop) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _CommentBox__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CommentBox */ "./resources/js/components/CommentBox.js");
+/* harmony import */ var _CommentForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CommentForm */ "./resources/js/components/CommentForm.js");
+/* harmony import */ var _CommentBox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CommentBox */ "./resources/js/components/CommentBox.js");
+
 
 
 
 function CommentSection(prop) {
-  var toShow = prop.data.map(function (xx) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentBox__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      key: xx.id,
-      values: xx
+  var AllCommentsBox = prop.comments.map(function (xx) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentBox__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      values: xx,
+      replies: prop.replies,
+      key: xx.id
     });
   });
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, toShow);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "container mt-5",
+    id: "ComSection"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Please Leave a Comment"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentForm__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    action: "/comments/create"
+  }), AllCommentsBox);
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (CommentSection);
@@ -99796,7 +99989,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Index() {
-  console.log(MyAuth);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     path: "/",
     exact: true,
@@ -99855,7 +100047,6 @@ function MyNavbar(prop) {
 
   var callSubmit = function callSubmit() {
     document.getElementById('my_form').submit();
-    console.log('call');
   };
 
   var present = '';
@@ -99947,8 +100138,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function PageAddBlog() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MyNavbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+function PageAddBlog(prop) {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MyNavbar__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    location: prop.location.pathname
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container mt-5"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_AddBlogForm__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
 }
@@ -100005,24 +100198,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _MyNavbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MyNavbar */ "./resources/js/components/MyNavbar.js");
 /* harmony import */ var _BlogContent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./BlogContent */ "./resources/js/components/BlogContent.js");
-/* harmony import */ var _CommentForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CommentForm */ "./resources/js/components/CommentForm.js");
-/* harmony import */ var _CommentSection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CommentSection */ "./resources/js/components/CommentSection.js");
-
+/* harmony import */ var _CommentSection__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CommentSection */ "./resources/js/components/CommentSection.js");
 
 
 
 
 
 function PageBlogEach() {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MyNavbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BlogContent__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "container mt-5",
-    id: "ComSection"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Please Leave a Comment"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentForm__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    action: "/blogcomments/create",
-    setid: JSON.parse(jsonBlogstoShow).id
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentSection__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    data: JSON.parse(jsonCommentstoShow)
-  })));
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MyNavbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_BlogContent__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentSection__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    comments: JSON.parse(jsonCommentstoShow),
+    replies: JSON.parse(jsonRepliestoShow)
+  }));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (PageBlogEach);
@@ -100070,10 +100256,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _MyNavbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MyNavbar */ "./resources/js/components/MyNavbar.js");
-/* harmony import */ var _CommentForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CommentForm */ "./resources/js/components/CommentForm.js");
-/* harmony import */ var _Corrousel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Corrousel */ "./resources/js/components/Corrousel.js");
-/* harmony import */ var _CommentSection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CommentSection */ "./resources/js/components/CommentSection.js");
-
+/* harmony import */ var _Corrousel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Corrousel */ "./resources/js/components/Corrousel.js");
+/* harmony import */ var _CommentSection__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./CommentSection */ "./resources/js/components/CommentSection.js");
 
 
 
@@ -100084,14 +100268,9 @@ function PageGallery(prop) {
     location: prop.location.pathname
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "container mt-3"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Corrousel__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", {
-    className: "mt-3",
-    id: "ComDiv"
-  }, "Gallery Page - Please Leave a Comment"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentForm__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    action: "/gallerycomments/create",
-    setid: "1"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentSection__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    data: JSON.parse(jsonGalleryComments)
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Corrousel__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CommentSection__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    comments: JSON.parse(jsonCommentstoShow),
+    replies: JSON.parse(jsonRepliestoShow)
   })));
 }
 
@@ -100129,9 +100308,7 @@ function PageMain(prop) {
     label: "Welcome"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_MyNavbar__WEBPACK_IMPORTED_MODULE_6__["default"], {
     location: prop.location.pathname
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CardSection__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    showNum: "3"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part2__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part3__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_CardSection__WEBPACK_IMPORTED_MODULE_4__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part2__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part3__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Part1__WEBPACK_IMPORTED_MODULE_2__["default"], null));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (PageMain);
@@ -100153,12 +100330,10 @@ __webpack_require__.r(__webpack_exports__);
 
 function Part1() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "mt-5"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "container"
+    className: "container mt-5"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", {
     className: "text-center"
-  }, "Lorem"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Eiusmod velit duis ea esse est ea. Sit culpa eiusmod pariatur ex voluptate veniam. Culpa id consectetur est consectetur do dolore minim magna. Quis dolore cillum mollit duis minim ex deserunt sint pariatur culpa elit deserunt ad. Laboris sit deserunt excepteur laborum velit. Adipisicing cillum irure ullamco tempor exercitation consectetur pariatur adipisicing eu aliquip deserunt consequat id exercitation. Magna ut incididunt adipisicing eiusmod duis elit sit laboris elit.")));
+  }, "Lorem"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Eiusmod velit duis ea esse est ea. Sit culpa eiusmod pariatur ex voluptate veniam. Culpa id consectetur est consectetur do dolore minim magna. Quis dolore cillum mollit duis minim ex deserunt sint pariatur culpa elit deserunt ad. Laboris sit deserunt excepteur laborum velit. Adipisicing cillum irure ullamco tempor exercitation consectetur pariatur adipisicing eu aliquip deserunt consequat id exercitation. Magna ut incididunt adipisicing eiusmod duis elit sit laboris elit."));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Part1);

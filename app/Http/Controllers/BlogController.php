@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Blog;
 use App\Comment;
 use App\User;
+use App\Reply;
 
 class BlogController extends Controller
 {
@@ -17,15 +18,28 @@ class BlogController extends Controller
 
     public function show($id) {
         $blog = Blog::find($id);
-        $blogcomments = Comment::where('blogid', $id)->get();
+
+        $blogcomments = Comment::where('childid', $id)->where('parentid', '1')->get();
         if (is_null($blogcomments)){
             $blogcomments = [];
         }
+        $replies2find = [];
         foreach ($blogcomments as $blogcomment){
             $id = $blogcomment->userid; 
             $blogcomment->userid = User::find($id)->name;
+            array_push($replies2find, $blogcomment->id);
         }
-        return view('blog.show', ['blogs' => $blog, 'comments' => $blogcomments]);
+
+        $blogreplies = Reply::whereIn('parentcommentid', $replies2find)->get();
+        if (is_null($blogreplies)){
+            $blogreplies = [];
+        }
+        foreach ($blogreplies as $blogreply){
+            $id = $blogreply->userid; 
+            $blogreply->userid = User::find($id)->name;
+        }
+
+        return view('blog.show', ['blogs' => $blog, 'comments' => $blogcomments, 'replies' => $blogreplies]);
     }
 
     public function create() {
@@ -39,7 +53,9 @@ class BlogController extends Controller
         $newblog->authorid = str_replace('"','%731%', request('author'));
         
         $body = str_replace('"','%731%', request('body'));
-        $body2 = str_replace(array("\r", "\n"),'%732%', $body);
+        // $body2 = trim(preg_replace('/\s+/', '%732%', $body));
+        // $body2 = str_replace(array("\r", "\n"),'%732%', $body);
+        $body2 = str_replace("\r\n",'%732%', $body);
         $newblog->body = $body2;
 
         if(isset($_FILES["fileToUpload"])){

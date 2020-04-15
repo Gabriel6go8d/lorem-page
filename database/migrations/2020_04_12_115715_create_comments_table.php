@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGalleryCommentsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateGalleryCommentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('gallery_comments', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->bigint('userid');
+            $table->bigInteger('userid')->unsigned();
+            $table->foreign('userid')->references('id')->on('users')->onDelete('cascade');
             $table->string('comment');
+            $table->bigInteger('childid')->unsigned();
+            $table->bigInteger('parentid')->unsigned();
         });
     }
 
@@ -28,6 +31,6 @@ class CreateGalleryCommentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gallery_comments');
+        Schema::dropIfExists('comments');
     }
 }

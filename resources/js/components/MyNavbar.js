@@ -8,7 +8,6 @@ function MyNavbar(prop) {
 
     const callSubmit = () => {
         document.getElementById('my_form').submit()
-        console.log('call')
     }    
 
     var present = ''
@@ -26,6 +25,7 @@ function MyNavbar(prop) {
         present = <React.Fragment><Nav.Link href="/login" style={linkStyles}>Login</Nav.Link>
                     <Nav.Link href="/register" style={linkStyles}>Register</Nav.Link></React.Fragment>
     }
+
     return (
         <React.Fragment>
             <Navbar bg="dark" variant='dark' sticky='top' expand="lg">

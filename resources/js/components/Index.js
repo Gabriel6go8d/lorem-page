@@ -9,9 +9,7 @@ import Footer from './Footer';
 import PageEditAccount from './PageEditAccount'
 import PageAddBlog from './PageAddBlog'
 
-function Index() {
-    
-    console.log(MyAuth)
+function Index() {    
     return (
         <React.Fragment>
             <Router>

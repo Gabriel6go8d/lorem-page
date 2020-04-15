@@ -3,17 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\GalleryComment;
+use App\Comment;
 use App\User;
+use App\Reply;
 
 class GalleryController extends Controller
 {
     public function index() {
-        $commentlist = GalleryComment::all();
-        foreach ($commentlist as $commentary){
-            $id = $commentary->userid; 
-            $commentary->userid = User::find($id)->name;
+
+        $blogcomments = Comment::where('childid', 1)->where('parentid', '2')->get();
+        if (is_null($blogcomments)){
+            $blogcomments = [];
         }
-        return view('gallery.index', ['jsonComment' => $commentlist]);
+        $replies2find = [];
+        foreach ($blogcomments as $blogcomment){
+            $id = $blogcomment->userid; 
+            $blogcomment->userid = User::find($id)->name;
+            array_push($replies2find, $blogcomment->id);
+        }
+
+        $blogreplies = Reply::whereIn('parentcommentid', $replies2find)->get();
+        if (is_null($blogreplies)){
+            $blogreplies = [];
+        }
+        foreach ($blogreplies as $blogreply){
+            $id = $blogreply->userid; 
+            $blogreply->userid = User::find($id)->name;
+        }
+
+        return view('gallery.index', ['comments' => $blogcomments, 'replies' => $blogreplies]);
+
     }
 }
